@@ -65,12 +65,20 @@ class app:
         # Convert vertices to NumPy array
         vertices_np = np.array(vertices, dtype=np.float32)
         
-        # Use the size of the NumPy array
-        glBufferData(GL_ARRAY_BUFFER, vertices_np.nbytes, vertices_np, GL_STATIC_DRAW)
+        # Upload data to GPU (convert NumPy array to ctypes array)
+        glBufferData(GL_ARRAY_BUFFER, 
+                     vertices_np.nbytes, 
+                     vertices_np, 
+                     GL_STATIC_DRAW)
         
         position_loc = glGetAttribLocation(self.shader, "inPosition") #get location of inPosition in vertex shader
         glEnableVertexAttribArray(position_loc) #enable vertex attribute array
-        glVertexAttribPointer(position_loc, 3, GL_FLOAT, False, 3 * sizeof(GLfloat), ctypes.c_void_p(0)) #specify how openGL should interpret the vertex data (index, size, type, normalized, stride, pointer)
+        glVertexAttribPointer(position_loc, 
+                              3, 
+                              GL_FLOAT, 
+                              False, 
+                              3 * sizeof(GLfloat), 
+                              ctypes.c_void_p(0)) #specify how openGL should interpret the vertex data (index, size, type, normalized, stride, pointer)
         
     def gl_draw(self):
         vertices =[]
