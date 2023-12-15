@@ -21,8 +21,8 @@ class app:
         pygame.display.gl_set_attribute(pygame.GL_MULTISAMPLESAMPLES, 4) #anti-aliasing (smooth edges)
         pygame.display.gl_set_attribute(pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE) #core profile (no deprecated functions) 
 
-        
         self.running = True
+        self.dots_list = []
         self.main_loop() 
         
     
@@ -38,12 +38,12 @@ class app:
         
     def main_loop(self):
         dot = DotPoints()
-        dot.inititialize()
-
+        dot2 = DotPoints()
+        dot3 = DotPoints()
+        
         while self.running:
-                 
-            dot.draw()
-
+                       
+            DotPoints.draw_dots()
             self.update()
 
             self.fps()
@@ -54,7 +54,6 @@ class app:
 
         self.quit()
     
-
 if __name__ == "__main__":
     app()
     

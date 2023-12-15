@@ -6,16 +6,23 @@ import OpenGL_accelerate
 import numpy as np
 
 class DotPoints:
-    def __init__(self):
-        self.x = random.uniform(-1,1)
-        self.y = random.uniform(-1,1)
-        self.z = 0
+    all_dots = []
+    
+    def __init__(self, self_x = None, self_y= None, self_z=None):
+        self.x = self_x if self_x is not None else random.uniform(-1, 1)
+        self.y = self_y if self_y is not None else random.uniform(-1, 1)
+        self.z = self_z if self_z is not None else 0
         # self.r = r
         # self.g = g
         # self.b = b
         self.time = 0
         self.shader = self.create_shader_program('shaders/vertex_shader.txt', 'shaders/fragment_shader.txt')
         self.vbo = None
+        self.add_to_list(self)
+        self.inititialize()
+        
+    def add_to_list(self, dot): 
+        DotPoints.all_dots.append(dot)
         
     def create_shader_program(self, vertex_filepath, fragment_filepath):
         #region reader vertex and fragment shader files
@@ -46,6 +53,9 @@ class DotPoints:
     
     def inititialize(self):
         glUseProgram(self.shader) #use shader program (vertex and fragment shader)
+      
+    def update_vbo(self):
+        self.init_vbo([self.x, self.y, self.z])
         
     def init_vbo(self, vertices):
         self.vbo = glGenBuffers(1)
@@ -70,18 +80,25 @@ class DotPoints:
                               3 * sizeof(GLfloat), 
                               ctypes.c_void_p(0)) #specify how openGL should interpret the vertex data (index, size, type, normalized, stride, pointer)
         
-    def draw(self):
-        glClear(GL_COLOR_BUFFER_BIT) # clear screen 
-        
-        self.init_vbo([self.x, self.y, self.z])
+    def draw(self, x = None, y = None, z = None):
+        self.init_vbo([x or self.x, y or self.y, z or self.z])
         
         try:
             glDrawArrays(GL_POINTS, 0, 1)
             glEnable(GL_POINT_SMOOTH)
         except Exception as e:
             print(e)
+            
+    @classmethod
+    def draw_dots(cls):
+        glClear(GL_COLOR_BUFFER_BIT)  # clear screen
         
-    
+        for dot in cls.all_dots:
+            print(dot)
+            dot.update_vbo()
+            print(dot.x, dot.y, dot.z)
+            dot.draw()
+            
     
         
         
